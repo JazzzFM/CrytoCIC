@@ -1,0 +1,246 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[spanish]{babel}
+\usepackage[letterpaper]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+
+\author{Jaziel David Flores Rodríguez y Sergio ... el bailador xD}
+\date{\today}
+\title{Lattices en Criptografía.}
+
+\begin{document}
+\maketitle
+
+\begin{abstact}
+La criptografía basada en Lattices es el término genérico para las construcciones de primitivas criptográficas que involucran redes, ya sea en la construcción misma o en las pruebas de seguridad.\\	
+	
+	Las construcciones basadas en Lattices son actualmente los candidatos más importantes para la criptografía post-cuántica. A diferencia de los esquemas de clave pública más utilizados y conocidos, como el RSA, Diffie-Hellman o los criptosistemas de curva elíptica, que son fácilmente atacados por una computadora cuántica, algunas construcciones basadas en Lattices parecen ser resistentes al ataque de las computadoras clásicas y cuánticas. Además, muchas construcciones basadas en redes se consideran seguras bajo el supuesto de que ciertos problemas de redes computacionales estudiados no se pueden resolver de manera eficiente.\\
+
+	 De hecho, las principales formas alternativas de criptografía de clave pública son los esquemas basados en la dificultad de la factorización y los problemas relacionados y los esquemas basados en la dificultad del logaritmo discreto y los problemas relacionados. Sin embargo, se sabe que tanto la factorización como el logaritmo discreto pueden resolverse en tiempo polinómico en una computadora cuántica.\\ 
+	
+	Se sabe que algunos esquemas de cifrado se romperían si la factorización fuera fácil --en una entrada promedio--, incluso si la factorización fuera realmente difícil. Sin embargo, para las construcciones basadas en Lattices más eficientes y prácticas (como esquemas basados en \textit{NTRU} e incluso esquemas basados en \textit{LWE} con parámetros más agresivos), estos resultados de dificultad en el \textit{worst-case lattice problem} no se conocen. Para algunos esquemas, los resultados de dificultad en \textit{worst-case lattice problem}se conocen solo para ciertas \textit{Lattices estructuradas}. 
+	Ahora, si existe un algoritmo que puede romper eficientemente el esquema de cifrado con una probabilidad no despreciable, entonces existe un algoritmo eficiente que resuelve un cierto problema de Lattices en cualquier entrada. 
+\end{abstract}
+
+\section{Historia.}
+
+En 1996  Miklós Ajtai introdujo la primera contrucción criptográfica basada en Lattices cuya seguridad pudo ser basada en la dificuad de, los conocidos como \textit{problemas de lattices}, posteriormente Cynthia Dwork mostró un cierto caso de estas conocido como \textbf{Short Integer Solutions (SIS)} que es tan difícil como el \textit{worst-case lattice problem}.
+
+En 1998 Jeffrey Hoffstein, Jill Pipher, y Joseph H. Silverman introdujeron un esquema de cifrado de llave pública basado en Lattices, conocido como \textbf{NTRU}. Aunque su esquema no es conocido por ser al final tan dificil de resolver como el \textit{worst-case lattice problem}. \\
+
+Oded Regev propuso el primer esquema de cifrado de clave pública basado en Lattices cuya seguridad se demostró bajo los supuestos de la dificultad del \textit{worst-case lattice problem}, junto con el \textit{Learning with Errors problem (LWE)}. Desde entonces, mucho trabajo de seguimiento se ha centrado en mejorar la prueba de seguridad de Regev  y mejorar la eficiencia del esquema original. Se ha dedicado mucho más trabajo a construir primitivas criptográficas adicionales basadas en \textit{LWE} y problemas relacionados. Por ejemplo, en 2009, Craig Gentry introdujo el primer esquema de cifrado totalmente homomórfico, que se basó en un problema de red. \\ 
+
+
+\section{Contexto Matemático.}
+
+\textbf{Definición}. Sean \textbf{V} un $\mathbb{K}$-espacio vectorial, $\beta = \{ \mathbf{{v}}_{1},..., \mathbf{{v}}_{n}\}$ una base de \textbf{V}, y $\mathbb{A} \subset \mathbb{K}$ un anillo con las mismas operaciones binarias. Se define una Lattice en \textbf{V} generada por $\beta$ como el conjunto de todas las combinaciones lineales con elementos de $\beta$ con escalares en $\mathbb{A}$, y es denotada como $\Lambda_{\beta}$, es decir:
+
+\[ \Lambda_{\beta} = \left\{ \sum _{{i=1}}^{{n}}\alpha{\mathbf  {v}}_{i}\quad |\quad \alpha \in \mathbb{A},{\mathbf  {v}}_{i}\in \beta \quad \forall i \in \{1,..., n\} \right\} \]
+
+En general diferentes bases de \textbf{V} generarán diferentes Lattices. Aunque si consideramos la matriz de transición entre bases $\left[ T \right]_{\beta \beta'}$ esta pertenece al grupo lineal general de $\mathbb{A}$ es decir \textit{GL}$_{n}(\mathbb{A})$, y así las Lattices generadas por estas bases serán isomorfas desde que $\left[ T \right]_{\beta \beta'}$ induce un isomorfismo entre as dos Lattices.\\
+
+\textbf{Lattices en un espacio vectorial real.} \hline \\ 
+\medskip
+
+Sea V un $\mathbb{R}$-espacio vectorial, $\beta$ una base, tome el anillo $\mathbb{Z} \subset \mathbb{R}$, entonces una lattice en $\mathbb {R} ^{n}$  junto con la operación suma, i.e. ($\Lambda_{\beta}, +)$, es un subgrupo  del grupo del grupo aditivo ($\mathbb{R}^{n}$,+), y tal grupo es isomorfo al grupo aditivo ($\mathbb {Z}^{n}}$,+). En otras palabras, dada cualquier base de $\mathbb{R}^{n}$, el subgrupo aditivo, de $\mathbb{Z}^{n}$, de todas las combinaciones lineales de elementos de tal base con coeficientes enteros forman una Lattice. Una Lattice podría ser visualizada como un mosaico regular de un espacio por una celda primitiva. 
+\begin{figure}[h]
+
+\centering
+\includegraphics[width=4.5cm]{CELL.png}
+	\caption{Una Lattice en un plano Euclidiano.}
+\end{figure}
+
+Ahora, sabemos que diferentes bases pueden generar la misma Lattice, pero el valor absoluto del determinante de la matriz de cambio de base, o bien matriz de transición, está univocamente detrminado por los vectores de cordenadas de cada elemento de la base, y este se denoca como \textbf{Disc}($\Lambda$). 
+\pagebreak
+
+Se puede pensar que una Lattice es la división total del espacio $\mathbb{R}^{n}$ en poliedros iguales, copias de un paralelepípedo n-dimensional, y es conocida como \textbf{la región fundamental de la Lattice}.\\
+
+Entonces \textbf{Disc}($\Lambda$) es igual al volumen n-dimensional de este poliedro. Esta es la razón por la cual \textbf{Disc}($\Lambda$) a veces se denomina \textbf{covolumen} de la Lattice. Si esto es igual a 1, la Lattice se llama \textbf{unimodular}.\\ 
+
+
+\textbf{Lattices en un espacio vectorial complejo.} \hline \\
+\medskip
+
+Una Lattice en $\mathbb{C}^{n}$ es un subgrupo discreto el cual genera al $\mathbb{R}$-espacio vectorial 2n-dimensional. Por ejemplo los \textbf{Enteros Gaussianos} forman una Lattice en $\mathbb{C}^{n}$. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=6.5cm]{GAUSS.png}
+        \caption{Los Enteros Gaussianos como puntos de una Lattice en el plano complejo.}
+\end{figure}
+
+\hline
+\medskip
+
+Casos importantes de Lattices aparecen en Teoría de Números con un campo p-ádico y con un anillo de enteros p-ádicos. \\
+
+\medskip
+
+
+\textbf{Definición}. Sean $\beta$ una base de $\mathbb{R}^{n}$ y $\Lambda_{\beta}$ una Lattice. Un \textbf{Dominio Fundamental} para el conjunto cociente $\mathbb{R}^{n}/ \Lambda_{\beta}$ es el conunto: 
+
+\[\mathcal{F}(\Lambda_{\beta}) = \left\{ \sum _{{i=1}}^{{n}}\alpha{\mathbf  {v}}_{i}\quad | \quad 0 \leq \alpha_{i} < 1 \right\} \]
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=8.0cm]{DOMAIN.png}
+	\caption{Una Lattice L 2-dimensional con Dominio Fundamental $\mathcal{F}$.}
+\end{figure}
+
+\pagebreak 
+
+\section{Los Dos Problemas Fundamentales y Difíciles de Lattices.}
+
+Se estudian aqui una clase de problemas de optimización. La conjeturada intratabilidad de tales problemas es fundamental para la construcción de sistemas de cifrado seguros basados en Lattices. Para aplicaciones en dichos sistemas, las Lattices se toman en espacios vectoriales (a menudo $ \mathbb {Q}^{n}$) o módulos libres (a menudo $\mathbb{Z}^{n}$).
+\\
+\\
+Considere un espacio normado (\textbf{V}, $|| \quad||$) de dimensión n, y L una Lattice en \textbf{V}, abordaremos dos problemas fundamentales: 
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{|| c ||}
+\hline
+\hline
+	\textbf{Shortest Vector Problem (SVP)}\\ 
+	Encontrar el vecor no nulo más corto en L \\
+\hline
+\hline
+\textbf{Closest Vector Problem (CVP)}  \\
+Dado un vector $\mathbf{t} \in$\textbf{V} tal que no esté en L\\
+Encontrar un vecotor en L más cercano a $\mathbf{t}$. \\ 
+\hline
+\textbf{The Approximate Closest Vector Problem (apprCVP)}\\ 
+Dado $\mathbf{t}\in$\textbf{V}, encontrar un vector $\mathbf{v} \in$ L tal que $||\mathbf{v}-\mathbf{t}||$ es pequeño.\\
+Por ejemplo: \\ 
+	$||\mathbf{v}-\mathbf{t}||\leq k \displaystyle\min_{\mathbf{w} \in L}||\mathbf{w}-\mathbf{t}|| $ \\ 
+Para una constante $k$ pequeña \\
+\hline
+\hline
+\end{tabular}
+\end{figure}
+
+Los problemas de Lattices, \textbf{SVP} y \textbf{CVP}, se han estudiado intensamente durante más de 100 años, tanto problemas en Matemáticas puras y aplicadas, como para aplicacione para física y criptografía.
+
+El estudio Teorico de los Lattices es a menudo denomidado:
+\begin{figure}[h]
+	\centering
+	\textbf{Geometría de Números.}
+\end{figure}
+
+Un nombre otorgado por Minkowski en su libro de 1910 \textit{Geometrie der Zahlen}.\\
+
+El proceso práctico de encontrar vectores cortos, puede ser los más cortos, o cercanos, los más cercanos, dentro de las Lattices se llama \textbf{reducción de Lattices}.\\
+
+Los métodos de reducción de Lattices se han desarrollado ampliamente para aplicaciones de teoría de números, álgebra computacional, matemática discreta, matemática aplicada, combinatoria, criptografía.\\
+
+\pagebreak
+
+\textbf{Entendiendo el problema}. \\
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=8cm]{CSVL.png}
+\includegraphics[width=7.6cm]{csvl.png}
+\end{figure}
+
+Las Lattices tienen muchas bases y algunas bases son "mejores" que otras en la resolución de estos problemas.
+\begin{figure}[h]
+\centering
+\includegraphics[width=8.0cm]{BASISSS.png}
+\includegraphics[width=8.0cm]{CLOSE1.png}
+\end{figure}
+\pagebreak 
+
+Así pues nos encontramos con la siguiente situación. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=8.0cm]{CLOSE2.png}
+\includegraphics[width=8.0cm]{CLOSE3.png}
+\end{figure}
+
+\section{Teoremas Fundamntales sobre Lattices.}
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{|| c ||}
+\hline
+\hline
+  
+\textbf{La Desigualdad de Hademard.}\\
+Considere un espacio normado (\textbf{V}, $|| \quad||$) de dimensión n, una base cualquiera para $\beta = \{ \mathbf{{v}}_{1},..., \mathbf{{v}}_{n}\}$\\
+y L una Lattice generada por $\beta$. Entonces: \\
+\\
+$\mathbf{Disc}(L) \leq ||\mathbf{v}_{1}|| \cdot ||\mathbf{v}_{1}|| \cdot \cdot \cdot ||\mathbf{v}_{n}||.$\\ 
+\hline
+\hline
+\end{tabular}
+\end{figure}
+
+La desigualdad de Hadamard es cierta porque el volumen de un paralelepípedo nunca es mayor que el producto de las longitudes de sus lados.
+
+La desigualdad de Hadamard es una igualdad, si y sólo si, los vectores base son ortogonales (perpendiculares) entre sí. En medida de que es desigualdad mide la caracteristica de que la base no es ortogonal. \\ 
+
+Un famoso teorema de Hermite dice que cada Lattice tiene una base que es razonablemente ortogonal, donde la cantidad de no ortogonalidad está limitada únicamente en términos de la dimensión.
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{|| l ||}
+\hline
+\hline
+Un Teorema Fundamental de Lattices Desarrollado en el Siglo 19.\\ 
+\hiline 
+\hline
+\textbf{Teorema de Hermite.}\\
+
+Considere un espacio normado (\textbf{V}, $|| \quad||$) de dimensión n, una base cualquiera para $\beta = \{ \mathbf{{v}}_{1},..., \mathbf{{v}}_{n}\}$\\
+y L una Lattice generada por $\beta$. Entonces exite una constante $\gamma_{n}$ tal que:\\
+\\
+	a)Existe un vector no nulo $\mathbf{v}\in$L que satisface:\\
+$\quad \quad \quad \quad \quad \quad \quad \quad  \quad \quad \quad \quad \quad \quad \quad \quad ||\mathbf{v}|| \leq {\mathbf{Disc}(L)}^{\frac{1}{n}}.$ \\
+b) Existe un conjunto generador $\beta' = \{ \mathbf{{v'}}_{1},..., \mathbf{{v'}}_{n}\}$ para L que satisface:\\
+$\quad \quad \quad \quad \quad \quad \quad \quad  \quad \quad \quad \quad \quad \quad \quad  ||\mathbf{v'}_{1}|| \cdot ||\mathbf{v'}_{1}|| \cdot \cdot \cdot ||\mathbf{v'}_{n}||\leq {\gamma_{n}}^{\frac{n}{2}}\mathbf{Disc}(L).$ \\
+\hline
+\hline
+\end{tabular}
+\end{figure}
+
+La constante $\gamma_{n}$ se llama constante de Hermite. Se sabe que para n grande: 
+
+\[ \sqrt{\frac{n}{2 \pi e}} \leq \gamma_{n} \leq \sqrt{\frac{n}{\pi e}}\]
+
+Se ha encontrado el valor exacto de $\gamma_{n}$ para n < 8.\\
+
+\textbf{Definición}. Una región $\mathcal{R} \subset$ \texbf{V} se dice de Minkowskisi comple las siguientes condiciones:  
+\begin{figure}[h]
+        \centering
+        \textbf{Compacto:} Es decir que cea cerrado y acotado. \\
+	\textbf{Convexo:} Es decir, si $\mathbf{u,w}\in \mathcal{R}$ entonces  $\mathbf{seg[u,v]} \subset \mathcal{R}$.
+	\textbf{Simétrico:} $\forall \mathbf{v} \in \mathcal{R}$ implica $\mathbf{-v} \in \mathcal{R}$.
+\end{figure}
+
+\textbf{Encontrando puntos sobre Lattices — Un Resultado Teorico.} \\ 
+
+Un resultado importante del Teorema de Hermite es el siguiente. 
+
+\begin{figure}[h]
+\centering
+\begin{tabular}{|| l ||}
+\hline
+\hline
+	\textbf{Teorema de Minkowski}.\\
+
+\hiline
+\hline
+Considere un espacio normado (\textbf{V}, $|| \quad||$) de dimensión n, una base cualquiera para $\beta = \{ \mathbf{{v}}_{1},..., \mathbf{{v}}_{n}\}$\\
+y L una Lattice generada por $\beta$. Entonces para cada región de Minkowski $\mathcal{R}$ de voluman a lo más $2^{n}\mathbf{Disc}(L)$ \\
+contiene un punto no nulo en la Lattice. \\ 
+\hline
+\hline
+\end{tabular}
+
+\end{document}
+              
